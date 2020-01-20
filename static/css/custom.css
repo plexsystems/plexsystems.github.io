@@ -1,0 +1,78 @@
+body {
+    font-family: 'Helvetica', 'Arial', 'sans-serif';
+}
+
+#header {
+    background-color: #2E2F3B;
+}
+
+#sub-nav a {
+    color: #FFF;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logo-text {
+    color: #FFFFFF;
+    font-family: 'helveticaneuethin', 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
+    font-weight: lighter;
+    font-size: 25px;
+}
+
+.logo {
+    background-image: url('/images/logo.png');
+    width: 130px;
+    height: 57px;
+    background-size: 115px 25px;
+}
+
+.article-title {
+    font-weight: normal;
+}
+
+.article-meta .article-author a {
+    color: #ee7600;
+}
+
+.article-author-img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+}
+
+.article-date {
+    float: none;
+    color: #989898;
+}
+
+.article-categories .article-category-link {
+    border-radius: 5px;
+    padding: 1px 4px 1px;
+    border: 1px solid #989898;
+    font-size: 12px;
+    color: #989898;
+    text-transform: lowercase;
+    margin-left: 2px;
+    border-bottom: 1px solid #989898;
+}
+
+.article-meta .article-categories a:hover {
+    border: 1px solid #ee7600;
+    color: #ee7600;
+}
+
+.calendar-img {
+    width: 15px;
+    height: 15px;
+    padding-left: 10px;
+}
+
+.github-img {
+    width: 20px;
+    height: 20px;
+    padding-right: 5px;
+    vertical-align: middle;
+}
+

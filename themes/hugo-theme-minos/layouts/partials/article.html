@@ -1,0 +1,111 @@
+<article class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        {{ if .Title }}
+        <header class="article-header">
+            <h1 class="article-title" itemprop="name">{{ .Title }}</h1>
+        </header>
+        {{ end }}
+        <div class="article-meta">
+            <img alt="{{ .Params.Author }}" class="article-author-img"
+                src="https://avatars2.githubusercontent.com/{{ .Params.Github }}?v=3&s=40" />
+
+            <span class="article-author">
+                <a href="//github.com/{{ .Params.Github }}">{{ .Params.Author }}</a>
+            </span>
+
+            <img class="calendar-img" src="/images/calendar.png" alt="calendar" />
+
+            <span class="article-date">
+                <time datetime='{{ .Date.Format "01-06-2006" }}'
+                    itemprop="datePublished">{{ .Date.Format "January 2, 2006" }}</time>
+            </span>
+            {{ $Site := .Site }}
+            {{ if .Params.categories }}
+            //
+            <span class="article-categories">
+                {{ range $i, $e := .Params.categories }}
+                <a class="article-category-link" href="{{ $Site.BaseURL }}/categories/{{ $e | urlize }}">{{ $e }}</a>
+                {{ end }}
+            </span>
+            {{ end }}
+            {{ if .Site.DisqusShortname }}
+            <div class="article-comment-link-wrap">
+                <a href="{{ .RelPermalink }}#disqus_thread" class="article-comment-link">Comments</a>
+            </div>
+            {{ end }}
+        </div>
+        <div class="article-entry" itemprop="articleBody">
+            <p>
+            {{ if .Params.featuredImage }}<img src="{{.Params.featuredImage}}"><br>{{ end }}
+            {{ .Content }}
+            </p>
+        </div>
+
+        <!-- 
+        {{ if not .Params.notoc }}
+        {{ if .TableOfContents }}
+        <div class="article-toc" {{ if .Site.Params.SmartToc }}style="display:none;" {{ end }}>
+            <h3>{{ T "Contents" }}</h3>
+            {{ .TableOfContents }}
+        </div>
+        {{ end }}
+        {{ end }}
+        -->
+
+        {{ if .Site.Params.SmartToc }}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.slim.min.js"
+            integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+        <script>
+            (function () {
+                var $toc = $('#TableOfContents');
+                if ($toc.length > 0) {
+                    var $window = $(window);
+
+                    function onScroll() {
+                        var currentScroll = $window.scrollTop();
+                        var h = $('.article-entry h1, .article-entry h2, .article-entry h3, .article-entry h4, .article-entry h5, .article-entry h6');
+                        var id = "";
+                        h.each(function (i, e) {
+                            e = $(e);
+                            if (e.offset().top - 10 <= currentScroll) {
+                                id = e.attr('id');
+                            }
+                        });
+                        var active = $toc.find('a.active');
+                        if (active.length == 1 && active.eq(0).attr('href') == '#' + id) return true;
+
+                        active.each(function (i, e) {
+                            $(e).removeClass('active').siblings('ul').hide();
+                        });
+                        $toc.find('a[href="#' + id + '"]').parentsUntil('#TableOfContents').each(function (i, e) {
+                            $(e).children('a').addClass('active').siblings('ul').show();
+                        });
+                    }
+
+                    $window.on('scroll', onScroll);
+                    $(document).ready(function () {
+                        $toc.find('a').parent('li').find('ul').hide();
+                        onScroll();
+                        document.getElementsByClassName('article-toc')[0].style.display = '';
+                    });
+                }
+            })();
+        </script>
+        {{ end }}
+
+
+        {{ if .Params.tags }}
+        <footer class="article-footer">
+            <ul class="article-tag-list">
+                {{ range .Params.tags }}
+                <li class="article-tag-list-item">
+                    <a class="article-tag-list-link" href="{{ $Site.BaseURL}}/tags/{{ . | urlize }}">{{ . }}
+                    </a>
+                </li>
+                {{ end }}
+            </ul>
+        </footer>
+        {{ end }}
+    </div>
+    {{ partial "nav.html" . }}
+</article>

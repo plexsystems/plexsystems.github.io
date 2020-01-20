@@ -1,0 +1,7 @@
+baseURL = "https://plexsystems.github.io"
+languageCode = "en-us"
+title = "Plex Engineering"
+theme = "hugo-theme-minos"
+
+[params]
+  customCss = ["css/custom.css"]

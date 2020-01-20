@@ -1,0 +1,26 @@
+name: blog
+
+on: [pull_request, push]
+
+jobs:
+  hugo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Run Hugo
+        uses: crazy-max/ghaction-hugo@v1
+        with:
+          version: v0.62.2
+          extended: false
+          args: --cleanDestinationDir --minify --verbose
+
+      - name: Deploy Site
+        if: success() && github.event_name != 'pull_request'
+        uses: crazy-max/ghaction-github-pages@v1
+        with:
+            target_branch: master
+            build_dir: public
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
