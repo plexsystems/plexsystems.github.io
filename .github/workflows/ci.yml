@@ -1,7 +1,14 @@
 name: blog
 
-on: [pull_request, push]
+on:
+  pull_request:
+    branches:
+      - develop
 
+  push:
+    branches:
+      - develop
+      
 jobs:
   hugo:
     runs-on: ubuntu-latest

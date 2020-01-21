@@ -1,19 +1,15 @@
 <header id="header">
     <div id="header-outer" class="outer">
         <div id="header-inner" class="inner">
-            <a id="main-nav-toggle" class="nav-icon" href="javascript:;"></a>
-            <a id="logo" class="logo"></a>
-            <a id="logo" class="logo-text" href="{{ .Site.Home.Permalink }}">Engineering Blog</a>
-            <nav id="main-nav">
-                {{ range .Site.Menus.main }}
-                <a class="main-nav-link" href="{{ .URL }}">{{ .Name }}</a>
-                {{ end }}
-            </nav>
-            <nav id="sub-nav">
-                <div id="search-form-wrap">
-                    <a href="//github.com/plexsystems"><img src="/images/github.png" class="github-img" alt="github" /> GitHub</a>
-                </div>
-            </nav>
+            <span class="logo-display">
+                <a id="logo" class="logo"></a>
+                <a class="logo-text" href="{{ .Site.Home.Permalink }}">Engineering Blog</a>
+                <nav id="main-nav">
+                    {{ range .Site.Menus.main }}
+                    <a class="main-nav-link" href="{{ .URL }}">{{ .Name }}</a>
+                    {{ end }}
+                </nav>
+            </span>
         </div>
     </div>
 </header>
