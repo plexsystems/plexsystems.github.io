@@ -6,17 +6,20 @@ body {
     background-color: #2E2F3B;
 }
 
-#sub-nav a {
-    color: #FFF;
-    font-weight: bold;
-    text-decoration: none;
+#header-inner {
+    display: flex;
+}
+
+.logo-display {
+    display: flex;
 }
 
 .logo-text {
     color: #FFFFFF;
-    font-family: 'helveticaneuethin', 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
+    font-family: 'Helvetica Neue Thin', 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
     font-weight: lighter;
     font-size: 25px;
+    white-space: nowrap;
 }
 
 .logo {
@@ -56,6 +59,7 @@ body {
     text-transform: lowercase;
     margin-left: 2px;
     border-bottom: 1px solid #989898;
+    white-space: nowrap;
 }
 
 .article-meta .article-categories a:hover {
@@ -68,11 +72,3 @@ body {
     height: 15px;
     padding-left: 10px;
 }
-
-.github-img {
-    width: 20px;
-    height: 20px;
-    padding-right: 5px;
-    vertical-align: middle;
-}
-
