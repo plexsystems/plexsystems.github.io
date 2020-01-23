@@ -15,4 +15,4 @@ Installation instructions for your operating system can be found [here](https://
 
 ## Deployment
 
-Changes pushed to the `develop` branch will automatically deploy to the live environment.
+Changes merged into the `develop` branch will automatically deploy to the live environment.
