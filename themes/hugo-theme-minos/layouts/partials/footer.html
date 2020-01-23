@@ -1,9 +1,15 @@
-<footer id="footer">
+</div>
+<footer>
     <div class="outer">
-        <div id="footer-info" class="inner">
-            &copy; {{ now.Format "2006"}} {{ or .Site.Author.name .Site.Title }}
+        <div id="footer-note">
+            All of our posts are written by engineers at Plex Systems. Our goal is to share our experiences (both good
+            and bad), in order to promote openness and collaboration within the technical community.
+        </div>
+        <div id="copyright">
+            &copy; {{ now.Format "2006"}} Plex Systems
         </div>
     </div>
+
     {{ template "_internal/google_analytics_async.html" . }}
 
     <link rel="stylesheet"
