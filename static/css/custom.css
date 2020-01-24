@@ -8,19 +8,17 @@ footer {
     background-color: #57626e;
     color: #FFF;
     padding: 20px;
-    font-family: 'Helvetica Neue Thin', 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
-    height: 100px;
-    flex-shrink: 0;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
 }
 
 #footer-note {
     padding-bottom: 30px;
-    font-size: 0.85em;
+    font-size: 14px;
 }
 
 #copyright {
     text-align: left;
-    font-size: 0.85em;
+    font-size: 14px;
 }
 
 #header {
