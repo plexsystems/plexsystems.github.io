@@ -1,25 +1,24 @@
 body {
     font-family: 'Helvetica', 'Arial', 'sans-serif';
     color: #000;
-    display: flex;
-    flex-direction: column;
+    height: 100%;
 }
 
 footer {
     background-color: #57626e;
     color: #FFF;
     padding: 20px;
-    font-family: 'Helvetica Neue Thin', 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
 }
 
 #footer-note {
-    padding-bottom: 15px;
-    font-size: 0.85em;
+    padding-bottom: 30px;
+    font-size: 14px;
 }
 
 #copyright {
     text-align: left;
-    font-size: 0.85em;
+    font-size: 14px;
 }
 
 #header {
@@ -28,6 +27,15 @@ footer {
 
 #header-inner {
     display: flex;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+}
+
+#main {
+    flex: 1 0 auto;
 }
 
 .logo {
