@@ -1,8 +1,7 @@
 body {
     font-family: 'Helvetica', 'Arial', 'sans-serif';
     color: #000;
-    display: flex;
-    flex-direction: column;
+    height: 100%;
 }
 
 footer {
@@ -10,10 +9,12 @@ footer {
     color: #FFF;
     padding: 20px;
     font-family: 'Helvetica Neue Thin', 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
+    height: 100px;
+    flex-shrink: 0;
 }
 
 #footer-note {
-    padding-bottom: 15px;
+    padding-bottom: 30px;
     font-size: 0.85em;
 }
 
@@ -28,6 +29,15 @@ footer {
 
 #header-inner {
     display: flex;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+}
+
+#main {
+    flex: 1 0 auto;
 }
 
 .logo {
