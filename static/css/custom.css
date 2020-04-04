@@ -1,14 +1,16 @@
 body {
-    font-family: 'Helvetica', 'Arial', 'sans-serif';
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
     color: #000;
     height: 100%;
+    font-weight: 200;
+    font-size: 15px;
+    line-height: 24px;
 }
 
 footer {
-    background-color: #57626e;
+    background-color: #000;
     color: #FFF;
     padding: 20px;
-    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
 }
 
 #footer-note {
@@ -19,10 +21,11 @@ footer {
 #copyright {
     text-align: left;
     font-size: 14px;
+    color: #3beedd;
 }
 
 #header {
-    background-color: #2E2F3B;
+    background-color: #000;
 }
 
 #header-inner {
@@ -39,14 +42,13 @@ footer {
 }
 
 .logo {
-    background-image: url('/images/logo.png');
+    background-image: url('/images/plex-logo.png');
     width: 120px;
     background-size: 110px 21px;
 }
 
 .logo-text {
     color: #FFFFFF;
-    font-family: 'Helvetica Neue Thin', 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
     font-weight: lighter;
     font-size: 27px;
     white-space: nowrap;
@@ -66,7 +68,12 @@ footer {
 }
 
 .article-meta .article-author a {
-    color: #ee7600;
+    color: #999;
+    font-weight: 400;
+}
+
+.article-author a:hover {
+    color: #fa342b;
 }
 
 .article-author-img {
@@ -79,24 +86,26 @@ footer {
 
 .article-date {
     float: none;
-    color: #989898;
+    color: #999;
+    font-weight: 400;
 }
 
 .article-categories .article-category-link {
     border-radius: 5px;
     padding: 1px 4px 1px;
-    border: 1px solid #989898;
+    border: 1px solid #999;
     font-size: 12px;
-    color: #989898;
+    color: #999;
     text-transform: lowercase;
     margin-left: 2px;
-    border-bottom: 1px solid #989898;
+    border-bottom: 1px solid #999;
     white-space: nowrap;
+    font-weight: 400;
 }
 
 .article-meta .article-categories a:hover {
-    border: 1px solid #ee7600;
-    color: #ee7600;
+    border: 1px solid #fa342b;
+    color: #fa342b;
 }
 
 .calendar-img {
