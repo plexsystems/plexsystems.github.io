@@ -5,7 +5,7 @@ body {
 }
 
 footer {
-    background-color: #57626e;
+    background-color: #000;
     color: #FFF;
     padding: 20px;
     font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
@@ -22,7 +22,7 @@ footer {
 }
 
 #header {
-    background-color: #2E2F3B;
+    background-color: #000;
 }
 
 #header-inner {
@@ -39,7 +39,7 @@ footer {
 }
 
 .logo {
-    background-image: url('/images/logo.png');
+    background-image: url('/images/plex-logo.png');
     width: 120px;
     background-size: 110px 21px;
 }
@@ -66,7 +66,11 @@ footer {
 }
 
 .article-meta .article-author a {
-    color: #ee7600;
+    color: #989898;
+}
+
+.article-author a:hover {
+    color: #fa342b;
 }
 
 .article-author-img {
@@ -95,8 +99,8 @@ footer {
 }
 
 .article-meta .article-categories a:hover {
-    border: 1px solid #ee7600;
-    color: #ee7600;
+    border: 1px solid #fa342b;
+    color: #fa342b;
 }
 
 .calendar-img {
