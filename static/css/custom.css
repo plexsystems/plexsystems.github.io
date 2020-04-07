@@ -7,6 +7,30 @@ body {
     line-height: 24px;
 }
 
+td {
+    white-space: normal !important;
+}
+
+span {
+    white-space: normal;
+}
+
+.blob-code .blob-code-inner {
+    white-space: normal;
+}
+
+.article-entry {
+    font-size: 16px;
+}
+
+.article-entry a {
+    color: #00c5cd;
+}
+
+.article-entry a:hover {
+    color: #fa342b;
+}
+
 footer {
     background-color: #000;
     color: #FFF;
@@ -113,7 +137,7 @@ footer {
 }
 
 .article-more-link a:hover {
-    color: #fa342b;   
+    color: #fa342b;
 }
 
 .calendar-img {
