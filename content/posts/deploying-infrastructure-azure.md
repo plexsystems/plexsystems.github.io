@@ -7,29 +7,37 @@ categories: ["infrastructure", "terraform", "kubernetes"]
 featuredImage: "/images/atlantis.jpg"
 ---
 
-At Plex, we manage a lot of our infrastructure using [Terraform](https://www.terraform.io/).
+The initial rollout of [Terraform](https://www.terraform.io/) at Plex, 
 
 Our initial adoption of Terraform was relatively painless. There weren't many teams using writing infrastructure as code, and most of the changes that were being deployed through Terraform were new pieces of infrastructure.
 
-As we grew, however, it became apparent that we needed to start putting some processes in place. Teams began to work in the same repositories, on the same pieces of infrastructure, and effective reviews were getting increasingly difficult.
+However, as we increased the amount of resources managed by Terraform, it became apparent that we needed to start putting some processes in place.
 
 ## Collaboration was difficult
 
+In order to verify the infrastructure changes, engineers needed to run `terraform plan`. Typically this was done locally on their computer, and while this approach made is easy for the engineer to feedback, it presented other problems.
+
+First, in order to successfully run a plan against the existing infrastructure, the engineer themselves needed to have read access to all of the resources that they would be making changes to. If even just a service principal. While this may seem reasonable, it was more of a problem of scale. Anyone who wanted to be an effective contributor to the code base would need permissions in Azure to do so, which can quickly spiral out of control and makes managing access more difficult.
+
+Secondly, we require multiple approvers for every pull request at Plex. This meant that not only the contributor had to run a plan against their changes, but the reviewer as well. Or even worse, just look at changes that were made to the Terraform configurations. This typically meant that the result of a plan was pasted into the pull request so that everyone could clearly see how each resource would be impacted.
+
 ## Plans went stale
+
+Unfortunately, infrastructure can change at a moments notice. Especially when multiple contributors and teams are working in the same space. A plan that was run, even just five minutes ago, could be obsolete and giving reviewers the wrong information.
 
 ## The homegrown solution
 
-Initially, we implemented our own set of scripts to handle a lot of the pull request orchestration for us.
+To address these problems, we wrote a couple PowerShell scripts (one for `plan` and one for `apply`) that would be executed on our build agents in Azure. These were wired up as policy checks in the repository, allowing us to run them on demand, or automatically with webhooks.
 
-When a pull request was created, the scripts would run `terraform plan` against the changes and output the results of the plan to the pull request comment thread within Azure DevOps. This enabled reviewers to see the actual changes that were being introduced, without having to run the plan locally themselves.
+When a pull request was created, the plan script would execute `terraform plan` against the changes and output the results of the plan to the pull request comment thread within Azure DevOps. This enabled reviewers to see the actual changes that were being introduced, without having to run the plan locally themselves. Awesome! Our first problem was solved.
 
-If the plan looked good, and the appropriate reviewers approved the change, another script would handle the `terraform apply`.
+Then, if the plan looked good and the appropriate reviewers approved the change, another script would handle the `terraform apply`.
 
-This approach worked well for us in the beginning, but as the amount of managed infrastructure and number of teams using the solution grew, we started noticing gaps.
+To solve the issue of stale plans, we added a policy that in order for an apply to be executed, an associated plan needed to be run at least 30 minutes prior. It wasn't ideal, but shortend the window of failure and gave us enough confidence that the result of the plan was still valid.
 
-Take, for example, stale plans. If a contributor in one pull request ran a plan, there were no guarentees that when it was time to apply the changes, that the results of the plan were still valid. Another contributor in a different pull request could have a applied changes, rendering the previous plan obsolete.
+This approach worked well for us in the beginning, but as the amount of managed infrastructure, and number of teams using the solution grew, we started noticing gaps.
 
-We knew these problems were not unique to us, and so we set out to find an alternative and ultimately settled on Atlantis.
+Rather than continuing to invest in our homegrown solution, we set out to find an alternative. If the title of the blog post didn't already give it away, that solution was Atlantis.
 
 ## What is Atlantis?
 
