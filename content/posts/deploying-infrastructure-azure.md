@@ -48,11 +48,11 @@ Conveniently, it addresses the problems that we have already discussed:
 - Visual `plan` and `apply` results in the pull request? _Check._
 - State locking to guarentee that plans stay relevant? _Check._
 
-And best of all? It's [free and open source](https://github.com/runatlantis/atlantis).
+As an added bonus, not only does it run on Kubernetes, its an [open source project](https://github.com/runatlantis/atlantis).
 
 ### How does it work?
 
-Atlantis is controlled by typing commands as comments on the pull request comment thread. Need to run `plan` against your pull request? Comment on the pull request: `atlantis plan`. This will instruct Atlantis to get the plan for your changes and respond to the pull request with the result.
+Atlantis is controlled by typing commands as comments on the pull request comment thread. Need to run `plan` against your pull request? Just comment on the pull request, `atlantis plan`. This will instruct Atlantis to get the plan for your changes and respond to the pull request with the result.
 
 To get the plan for you, Atlantis will:
 
@@ -64,7 +64,7 @@ To get the plan for you, Atlantis will:
 
 1. Report the plan result as a comment in the pull request.
 
-{{< figure src="atlantis_workflow.png" caption="source: " attr="http://medium.com/runatlantis/introducing-atlantis" attrlink="https://medium.com/runatlantis/introducing-atlantis-6570d6de7281">}}
+{{< figure src="/images/atlantis_workflow.png" >}}
 
 But it gets better! Atlantis also supports [Web Hooks](https://docs.microsoft.com/en-us/azure/devops/service-hooks/services/webhooks?view=azure-devops), which enable actions to be performed automatically such as when a pull request is opened.
 
