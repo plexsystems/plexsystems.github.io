@@ -7,6 +7,14 @@ body {
     line-height: 24px;
 }
 
+.article-entry a {
+    color: #00c5cd;
+}
+
+.article-entry a:hover {
+    color: #fa342b;
+}
+
 footer {
     background-color: #000;
     color: #FFF;
