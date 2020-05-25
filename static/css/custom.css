@@ -7,14 +7,6 @@ body {
     line-height: 24px;
 }
 
-td {
-    white-space: normal !important;
-}
-
-span {
-    white-space: normal;
-}
-
 .blob-code .blob-code-inner {
     white-space: normal;
 }
