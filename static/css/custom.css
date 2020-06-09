@@ -3,12 +3,53 @@ body {
     color: #000;
     height: 100%;
     font-weight: 200;
-    font-size: 15px;
+    font-size: 16px;
     line-height: 24px;
+    letter-spacing: .025rem;
 }
 
-.blob-code .blob-code-inner {
-    white-space: normal;
+footer {
+    background-color: #000;
+    color: #FFF;
+    padding: 20px;
+}
+
+[data-lang~="subtext"] {
+    color: #000;
+    font-variant: small-caps;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+}
+
+#copyright {
+    text-align: left;
+    font-size: 14px;
+    color: #3beedd;
+}
+
+#footer-note {
+    padding-bottom: 30px;
+    font-size: 14px;
+}
+
+#header {
+    background-color: #000;
+}
+
+#header-inner {
+    display: flex;
+}
+
+
+#main {
+    flex: 1 0 auto;
+}
+
+.article-entry pre, .article-entry .highlight {
+    background-color: #FFF
 }
 
 .article-entry {
@@ -23,60 +64,8 @@ body {
     color: #fa342b;
 }
 
-footer {
-    background-color: #000;
-    color: #FFF;
-    padding: 20px;
-}
-
-#footer-note {
-    padding-bottom: 30px;
+.article-entry code {
     font-size: 14px;
-}
-
-#copyright {
-    text-align: left;
-    font-size: 14px;
-    color: #3beedd;
-}
-
-#header {
-    background-color: #000;
-}
-
-#header-inner {
-    display: flex;
-}
-
-#container {
-    display: flex;
-    flex-direction: column;
-}
-
-#main {
-    flex: 1 0 auto;
-}
-
-.logo {
-    background-image: url('/images/plex-logo.png');
-    width: 120px;
-    background-size: 110px 21px;
-}
-
-.logo-text {
-    color: #FFFFFF;
-    font-weight: lighter;
-    font-size: 27px;
-    white-space: nowrap;
-}
-
-.logo-display {
-    display: flex;
-    flex-grow: 1;
-}
-
-.icons-display {
-    align-self: center;
 }
 
 .article-title {
@@ -130,6 +119,37 @@ footer {
 
 .article-more-link a:hover {
     color: #fa342b;
+}
+
+.article-entry pre,
+.article-entry .highlight {
+  padding: 0px 0;
+}
+
+.blob-code .blob-code-inner {
+    white-space: normal;
+}
+
+.logo {
+    background-image: url('/images/plex-logo.png');
+    width: 120px;
+    background-size: 110px 21px;
+}
+
+.logo-text {
+    color: #FFFFFF;
+    font-weight: lighter;
+    font-size: 27px;
+    white-space: nowrap;
+}
+
+.logo-display {
+    display: flex;
+    flex-grow: 1;
+}
+
+.icons-display {
+    align-self: center;
 }
 
 .calendar-img {
