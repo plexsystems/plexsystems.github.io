@@ -116,7 +116,30 @@ We use [Terragrunt](https://github.com/gruntwork-io/terragrunt) in our infrastru
 
 However, Atlantis allows you to create your own workflows if you provide a [server side repository configuration](https://www.runatlantis.io/docs/server-side-repo-config.html). This enabled us to extend Atlantis and run `terragrunt` commands.
 
-{{< gist jpreese 1dcc676c0c47382a7e487f82c5747881 >}}
+```yaml
+repos:
+# The list of repositories Atlantis watches. Supports wildcards/*
+- id: dev.azure.com/org/project/first-repo
+
+  # Only allow "apply" comments if the PR is approved and can be merged
+  apply_requirements: [approved, mergeable]
+  workflow: terragrunt
+
+# Instead of terraform commands, run these for plan and apply
+workflows:
+  terragrunt:
+    plan:
+      steps:
+      - run: terragrunt init -input=false -no-color
+      - run: terragrunt plan -input=false -no-color -out $PLANFILE
+    apply:
+      steps:
+      - run: terragrunt apply -input=false -no-color $PLANFILE
+```
+
+```subtext
+repository-config.yaml
+```
 
 ### 3. Customize the Atlantis image
 
@@ -124,7 +147,67 @@ Plex [air gaps](https://en.wikipedia.org/wiki/Air_gap_(networking)) its infrastr
 
 To accomplish this, we wrote our own custom `Dockerfile` that was based off of the original Atlantis image:
 
-{{< gist jpreese f538d049246cb73639dafffa07153355 >}}
+```Dockerfile
+FROM golang:1.13 as builder
+RUN apt-get update \
+  && apt-get install unzip
+
+# Install terraform-bundle
+RUN git clone \
+  --depth 1 \
+  --single-branch \
+  --branch "v0.12.0" \
+  https://github.com/hashicorp/terraform.git \
+  $GOPATH/src/github.com/hashicorp/terraform
+RUN cd $GOPATH/src/github.com/hashicorp/terraform \
+  && go install ./tools/terraform-bundle
+
+# Download plugins
+COPY terraform-bundle.hcl .
+RUN terraform-bundle package -os=linux -arch=amd64 terraform-bundle.hcl
+RUN mkdir /go/tmp \
+  && unzip /go/terraform_*-bundle*_linux_amd64.zip -d /go/tmp
+
+FROM runatlantis/atlantis:v0.11.1
+ENV TF_IN_AUTOMATION="true"
+ENV TF_CLI_ARGS_init="-plugin-dir=/home/atlantis/.atlantis/plugin-cache"
+
+# Install Azure CLI
+ARG AZURE_CLI_VERSION="2.0.74"
+RUN apk add py-pip \
+  && apk add --virtual=build gcc libffi-dev musl-dev openssl-dev python-dev make
+RUN pip --no-cache-dir install azure-cli==${AZURE_CLI_VERSION}
+
+# Install Terragrunt
+ARG TERRAGRUNT_VERSION="v0.23.2"
+RUN curl -L -o /usr/local/bin/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/${TERRAGRUNT_VERSION}/terragrunt_linux_amd64 \
+  && chmod +x /usr/local/bin/terragrunt
+  
+# Copy plugins
+COPY .terraformrc /root/.terraformrc
+COPY --chown=atlantis:atlantis --from=builder /go/tmp /home/atlantis/.atlantis/plugin-cache
+RUN mv /home/atlantis/.atlantis/plugin-cache/terraform /usr/local/bin/terraform
+
+# Configure git
+COPY .gitconfig /home/atlantis/.gitconfig
+COPY azure-devops-helper.sh /home/atlantis/azure-devops-helper.sh
+
+# Copy server-side repository config
+COPY repository-config.yaml /home/atlantis/repository-config.yaml
+
+CMD ["server", "--repo-config=/home/atlantis/repository-config.yaml"]
+
+LABEL org.opencontainers.image.title="Atlantis Environment"
+LABEL org.opencontainers.image.description="An environment to support executing Terragrunt operations with Atlantis"
+
+LABEL binary.atlantis.version="v0.11.1"
+LABEL binary.terragrunt.version=${TERRAGRUNT_VERSION}
+LABEL binary.azure-cli.version=${AZURE_CLI_VERSION}
+```
+
+```subtext
+dockerfile
+```
 
 Our `Dockerfile` not only contains Atlantis, but:
 
@@ -132,7 +215,24 @@ Our `Dockerfile` not only contains Atlantis, but:
 - The Azure CLI to be able to provision and manage Azure resources.
 - [Terraform Bundle](https://github.com/hashicorp/terraform/tree/master/tools/terraform-bundle) to explicitly configure which plugins are pre-installed.
 
-{{< gist jpreese c0e0a3c584d9699095de6ec64937c820 >}}
+```hcl
+# The version of Terraform to include with the bundle.
+terraform {
+  version = "0.12.21"
+}
+
+# The providers to pre-download and include in the Atlantis image.
+providers {
+  azurerm     = ["~> 2.0.0"]
+  azuread     = ["~> 0.7.0"]
+  random      = ["~> 2.2.0"]
+  local       = ["~> 1.4.0"]
+}
+```
+
+```subtext
+terraform-bundle.hcl
+```
 
 .. as well as small helper script to assist with authorization to Azure DevOps.
 
@@ -150,9 +250,27 @@ Atlantis won't be able to pull your private module repositories within Azure Dev
 
 To work around this, we implemented a [git credential helper](https://git-scm.com/docs/gitcredentials) that sets the git username and password to the credentials that have already passed into the environment.
 
-{{< gist jpreese ba8fa454db477221a0e95fd59adda643 >}}
+```bash
+[credential "https://dev.azure.com"]
+	helper = "/bin/sh /home/atlantis/azure-devops-helper.sh"
+```
 
-{{< gist jpreese 76cfb51e97d6de432f707b85c92458ef >}}
+```subtext
+.gitconfig
+```
+<br />
+```bash
+#!/bin/sh 
+
+# These values are already provided to the container from
+# the Kubernetes manifest.
+echo username=$ATLANTIS_AZUREDEVOPS_WEBHOOK_USER
+echo password=$ATLANTIS_AZUREDEVOPS_TOKEN
+```
+
+```subtext
+azure-devops-helper.sh
+```
 
 While the above `Dockerfile` may be more than you need, at a minimum you'll need the Azure CLI if you intend on managing Azure resources.
 
