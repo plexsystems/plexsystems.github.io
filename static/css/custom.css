@@ -123,7 +123,11 @@ footer {
 
 .article-entry pre,
 .article-entry .highlight {
-  padding: 0px 0;
+    padding: 0px;
+}
+
+.article-entry .highlight pre {
+    padding: 10px;
 }
 
 .blob-code .blob-code-inner {

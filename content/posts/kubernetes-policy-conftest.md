@@ -34,6 +34,10 @@ metadata:
   name: missinglabel
 ```
 
+```subtext
+namespace.yaml
+```
+
 We'll also need a policy. A Rego policy to enforce this requirement would look like the following:
 
 {{< gist jpreese 42a367e9cc01323931d863bba2777ad1 >}}
@@ -68,6 +72,10 @@ $ conftest test bundle.yaml
 FAIL - (ingress-nginx): Container constraints must be specified.
 ```
 
+```subtext
+terminal
+```
+
 We can then take the necessary steps to add the resource constraints into the Deployment so that our CI will allow the bundle onto our cluster.
 
 ## Using policy bundles
@@ -88,6 +96,10 @@ WARN - ingress-nginx-admission: API admissionregistration.k8s.io/v1beta1
 is deprecated in Kubernetes 1.19, use admissionregistration.k8s.io/v1 instead.
 ```
 
+```subtext
+terminal
+```
+
 ### Find security concerns with Kubesec
 
 [Kubesec](https://kubesec.io/) is a set of Rego policies that can be used to see if any of our resources have any insecure configurations.
@@ -100,6 +112,10 @@ FAIL - Deployment ingress-nginx-controller does not drop all capabilities
 FAIL - Deployment ingress-nginx-controller is not using a read only root filesystem
 FAIL - Deployment ingress-nginx-controller allows privileged escalation
 FAIL - Deployment ingress-nginx-controller is running as root
+```
+
+```subtext
+terminal
 ```
 
 Conftest enables us run policies against multiple resources at once—it is simple, yet powerful. No matter where the Kubernetes manifests originate from, in house or from the open, we can automatically execute our policies to validate that they're compliant with our requirements. This approach allows us to automate our standards and security compliant concerns, freeing up developers to focus on other tasks.
