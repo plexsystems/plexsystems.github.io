@@ -7,9 +7,9 @@ categories: ["containers", "testing"]
 featuredImage: "/images/containers.jpg"
 ---
 
-It is no secret that when we are writing software, tests are a critical component to ensuring that the code does what we say it does. It is so critical that most languages come with testing frameworks. JavaScript has testing frameworks such as [mocha](https://mochajs.org/) and [jasmine](https://jasmine.github.io/). Go ships with its own testing capabilities provided by the [testing package](https://golang.org/pkg/testing/). And while writing tests in these languages is an accepted standard practice, all too often, we forget that there's more to getting an application onto production than the app itself.
+It is no secret that when we are writing software, tests are a critical component to ensure the code does what we say it does. It is so critical that most languages come with testing frameworks. JavaScript has testing frameworks such as [mocha](https://mochajs.org/) and [jasmine](https://jasmine.github.io/). Go ships with its own testing capabilities provided by the [testing package](https://golang.org/pkg/testing/). And while writing tests in these languages is an accepted standard practice, all too often we forget that there's more to getting an application onto production than the app itself.
 
-Dockerfiles play a big part in how we ship software at Plex. We use them heavily in our build pipelines to run [containerized jobs](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops) as well as the distribution mechanism to get the software onto our Kubernetes clusters.  We like to say, "If it's code, we can test it." and that is no exception when it comes to writing our Dockerfiles.
+Dockerfiles play a big part in how we ship software at Plex. We use them heavily in our build pipelines to run [containerized jobs](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops) as well as the distribution mechanism to get the software onto our Kubernetes clusters.  We like to say, "If it's code, we can test it," and and that is no exception when it comes to writing our Dockerfiles.
 
 ## A traditional approach to writing Dockerfiles
 
@@ -40,9 +40,9 @@ root@fb06cc45835c:/go# unzip
 UnZip 6.00 of 20 April 2009, by Debian. Original by Info-ZIP.
 ```
 
-We know the `unzip` package successfully installed because after executing the binary, we got a response back that includes the version of the binary and the date it was built.
+We know the `unzip` package successfully installed because after executing the binary, we get a response back that includes the version of the binary and the date it was built.
 
-If the `unzip` package did not install successfully, we would see the container throwing an error stating that `unzip` is an unknown command.
+If the `unzip` package did not install successfully, the container would throw an error stating that `unzip` is an unknown command.
 
 ```shell
 $ docker run -it testing:latest
@@ -52,7 +52,7 @@ bash: unzip: command not found
 
 This cycle of adding commands into the Dockerfile, building the image, running the container, and exploring the structure of the container would need to continue until we met all of the requirements.
 
-While this process will allow us to satisfy all of the requirements, much of the verification was manual. Besides, when the requirements change, as they tend to do, it can be incredibly challenging to have confidence that we didn't inadvertently break anything else by introducing a change.
+While this process will allow us to satisfy all of the requirements, much of the verification is manual. Besides, when the requirements change, as they tend to do, it can be incredibly challenging to have confidence that we didn't inadvertently break anything else by introducing a change.
 
 ## A better way forward with Container Structure Test
 
@@ -87,12 +87,10 @@ Total tests: 1
 
 It's possible save some keystrokes, as well as time, by combining the `docker build` and `container-structure-test test` commands so that everytime the `Dockerfile` changes, a new image is built and the test suite is executed against the most recently built image.
 
-While it's possible to create a single test and then pass the test inside of your `Dockerfile`, which is reminicent of Test-Driven development, another valid approach is to define _all_ your requirements first and build the `Dockerfile` from the test suite. Whichever approach makes the most sense for your style is the one you should use.
+While it's possible to create a single test and then pass the test inside of your `Dockerfile` (which is reminiscent of Test-Driven development), another valid approach is to define _all_ your requirements first and build the `Dockerfile` from the test suite. Whichever approach makes the most sense for your style is the one you should use.
 
 To complete our example of writing a test suite for the Atlantis container image, this is the completed test suite.
 
 {{< gist jpreese a09e60c6e0267064a2e6a0ea8ece603b >}}
 
-Integrating Container Structure Test into your workflow for developing `Dockerfiles` automates a lot of the manual exploration that was previously required to verify the structure of the container. As a bonus, when the `Dockerfile` is built, we have a test suite that we can run everytime we need to make a change to the `Dockerfile`.
-
-
+Integrating Container Structure Test into your workflow for developing `Dockerfiles` automates much of the manual exploration that was previously required to verify the structure of the container. As a bonus, when the `Dockerfile` is built, we have a test suite that we can run everytime we need to make a change to the `Dockerfile`.
