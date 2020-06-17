@@ -2,6 +2,7 @@ baseURL = "https://plexsystems.github.io"
 languageCode = "en-us"
 title = "Plex Engineering"
 theme = "hugo-theme-minos"
+disqusShortname= "plexengineering"
 
 [params]
   customCss = ["css/custom.css"]

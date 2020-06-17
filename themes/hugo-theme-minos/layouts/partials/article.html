@@ -28,16 +28,11 @@
                 {{ end }}
             </span>
             {{ end }}
-            {{ if .Site.DisqusShortname }}
-            <div class="article-comment-link-wrap">
-                <a href="{{ .RelPermalink }}#disqus_thread" class="article-comment-link">Comments</a>
-            </div>
-            {{ end }}
         </div>
         <div class="article-entry" itemprop="articleBody">
             <p>
-            {{ if .Params.featuredImage }}<img src="{{.Params.featuredImage}}"><br>{{ end }}
-            {{ .Content }}
+                {{ if .Params.featuredImage }}<img src="{{.Params.featuredImage}}"><br>{{ end }}
+                {{ .Content }}
             </p>
         </div>
 
