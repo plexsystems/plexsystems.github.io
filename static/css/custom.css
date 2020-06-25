@@ -19,9 +19,8 @@ footer {
     font-variant: small-caps;
 }
 
-#container {
-    display: flex;
-    flex-direction: column;
+code {
+    white-space: pre-wrap;
 }
 
 #copyright {
@@ -42,7 +41,6 @@ footer {
 #header-inner {
     display: flex;
 }
-
 
 #main {
     flex: 1 0 auto;
