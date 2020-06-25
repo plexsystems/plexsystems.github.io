@@ -1,8 +1,6 @@
-    <meta property="og:title" content="{{ if .Params.ogtitle }}{{ .Params.ogtitle }}{{ else }}{{ .Title }}{{ end }}" />
-    <meta property="og:description" content="{{ if .Params.ogdescription }}{{ .Params.ogdescription }}{{ else }}{{ .Site.Params.Description }}{{ end }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="{{ .Lang }}" />
-    <meta property="og:url" content="{{ .Permalink }}" />
-    {{ if .Params.ogimage -}}
-    <meta property="og:image" content="{{ .Params.ogimage }}" />
-    {{- end }}
+<meta property="og:title" content="{{ if .Params.ogtitle }}{{ .Params.ogtitle }}{{ else }}{{ .Title }}{{ end }}" />
+<meta property="og:description" content="Blog posts written by engineers at Plex Systems" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="{{ .Lang }}" />
+<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:image" content="https://engineering.plex.com/images/plexsocial.png" />
