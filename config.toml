@@ -3,6 +3,7 @@ languageCode = "en-us"
 title = "Plex Engineering"
 theme = "hugo-theme-minos"
 disqusShortname= "plexengineering"
+googleAnalytics = "UA-170945889-1"
 
 [params]
   customCss = ["css/custom.css"]
