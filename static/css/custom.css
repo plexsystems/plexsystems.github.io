@@ -171,6 +171,7 @@ code {
 }
 
 .github-img {
+    padding-top: 10px;
     width: 28px;
     height: 28px;
 }
