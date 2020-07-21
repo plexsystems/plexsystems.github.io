@@ -9,15 +9,17 @@ featuredImage: "/images/plexgithub.png"
 
 At Plex, all container images in our environments are sourced from our internal container registries. While this gives us greater control over which images can and cannot be used in our environments, it poses a bigger problem. How can we leverage container images that are managed in the public cloud?
 
-A common solution to this problem is to sync the public container image to your organization's private registry. First, pulling down the image and then pushing it to the internal registry. However, this can be tedious for each public image that you intend to use. Furthermore, it's not always obvious where the image was originally sourced from, so updating to a newer version could result in a scavenger hunt to track down the source registry.
+A common solution to this problem is to sync the public container image to your organization's private registry by pulling down the image and then pushing it to your internal registry. However, this can be tedious for each public image that you intend to use. Furthermore, the origin of the original image is not always obvious, so updating to a newer version could result in a scavenger hunt to track down the original registry.
+
+Our solution to these problems, as well as others around container image management, was to build [Sinker](https://github.com/plexsystems/sinker).
 
 ## Introducing Sinker
 
-Our solution to these problems, as well as others around container image management, was [Sinker](https://github.com/plexsystems/sinker). Sinker is an open-source tool that not only pushes public images to an internal registry but also keeps a manifest of the images that are being used in each repository.
+Sinker is an open-source tool that not only pushes public images to an internal registry but also keeps a manifest of the images that are being used in each repository.
 
-Consider there scenario where your team wants to be able to deploy the [prometheus-operator](https://github.com/coreos/prometheus-operator). To deploy the operator, three images are required: the operator itself, the config reloader for the operator, and a ConfigMap reloader.
+Consider the scenario where your team wants to be able to deploy the [prometheus-operator](https://github.com/coreos/prometheus-operator). To deploy the operator, three images are required: the operator itself, the config reloader for the operator, and a ConfigMap reloader.
 
-Each of these images is not only tagged individually but are also sourced from different registries. Without any record of what image is in use and where the image came from, the upgrade story becomes difficult.
+Each of these images are not only tagged individually but are also sourced from different registries. Without any record of what image is in use and where the image came from, the upgrade story becomes difficult.
 
 ### The Image Manifest
 
@@ -48,7 +50,7 @@ With the introduction of the image manifest, there is now a defined desired stat
 
 ## Using Sinker at Plex
 
-We implemented Sinker to solve not only the problem of needing to sync public container images to our private registry but also to automatically detect which images are in use by our Kubernetes clusters.
+We implemented Sinker to solve not only the problem of syncing public container images to our private registry but also to automatically detect which images are in use by our Kubernetes clusters.
 
 Sinker's `create` command can optionally take a single `.yaml` file or directory that contains Kubernetes resources, and generate an image manifest with all of the found container images. Container images that are not only in the `image` field, but also images that are present inside of container arguments and some CRDs.
 
@@ -83,7 +85,7 @@ sources:
 .images.yaml
 ```
 
-Using the `update` will then update the image manifest when the Kubernetes resources are modified. Automatically updating the manifest enables our engineers only to have to worry about making changes to their resources, and not have to add, remove, or update version definitions in two places. Automatic manifest updates also reduces human error because the `update` command is executed against the same manifests that will be deployed to the cluster.
+Using the `update` command will then update the image manifest when the Kubernetes resources are modified. Automatically updating the manifest allows our engineers to only worry about making changes to their resources, and not adding, removing, or updating version definitions in two places. Automatic manifest updates also reduces human error because the `update` command is executed against the same manifests that will be deployed to the cluster.
 
 When it comes to the local testing of Kubernetes deployments, most of our engineering teams leverage [Kind](https://github.com/kubernetes-sigs/kind). For Kind to be able to run container images that require authentication (which is usually the case for private registries), the image needs to be pre-loaded into the cluster.
 
@@ -118,7 +120,7 @@ bash
 
 One of the best use cases we've found for Sinker is to incorporate it into a dedicated pipeline for updating and adding new images to our internal container registry. Moving the process of container image management into a pipeline ensures that every image present in the internal registry has been accepted for use.
 
-When an engineer needs to add or update a container image, the pull request needs to include the image manifest. During the review process, it's easy to see which image the engineer wants to add to the registry. If the source host is untrusted, or if it's a beta release, there might need to be a broader discussion during the review process.
+When an engineer needs to add or update a container image, the pull request should include the image manifest. During the review process, it's easy to see which image the engineer wants to add to the registry. If the source host is untrusted, or if it's a beta release, there might need to be a broader discussion during the review process.
 
 If the pull request is approved, the pipeline will first pull down all of the images present in the manifest. Immediately after pulling the images, we run a security vulnerability scan against all of the images.
 
