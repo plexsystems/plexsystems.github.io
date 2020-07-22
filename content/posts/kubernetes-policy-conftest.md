@@ -1,8 +1,9 @@
 ---
 title: "Accelerated Feedback Loops when Developing for Kubernetes with Conftest"
 date: "2020-05-23"
-author: "John Reese"
-github: jpreese
+authors:
+- github: jpreese
+  name: "John Reese"
 categories: ["kubernetes", "policy", "security", "code reviews"]
 featuredImage: "/images/kubernetes-policy-conftest/featured.jpg"
 ---

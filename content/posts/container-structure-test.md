@@ -1,8 +1,9 @@
 ---
 title: "Testing Containers with Container Structure Test"
 date: "2020-06-08"
-author: "John Reese"
-github: jpreese
+authors:
+- github: jpreese
+  name: "John Reese"
 categories: ["containers", "testing"]
 featuredImage: "/images/container-structure-test/featured.jpg"
 ---

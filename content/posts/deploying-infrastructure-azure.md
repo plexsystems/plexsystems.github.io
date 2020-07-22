@@ -1,8 +1,9 @@
 ---
 title: "Deploying Atlantis for Azure DevOps onto Kubernetes"
 date: "2020-04-05"
-author: "John Reese"
-github: jpreese
+authors:
+- github: jpreese
+  name: "John Reese"
 categories: ["azure", "infrastructure", "kubernetes", "terraform"]
 featuredImage: "/images/deploying-infrastructure-azure/featured.jpg"
 ---
