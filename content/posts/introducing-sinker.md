@@ -1,10 +1,11 @@
 ---
 title: "Introducing Sinker: A tool to sync container images from one registry to another"
 date: "2020-07-19"
-author: "John Reese"
-github: jpreese
+authors:
+- github: jpreese
+  name: "John Reese"
 categories: ["containers", "kubernetes", "open source"]
-featuredImage: "/images/plexgithub.png"
+featuredImage: "/images/introducing-sinker/featured.png"
 ---
 
 At Plex, all container images in our environments are sourced from our internal container registries. While this gives us greater control over which images can and cannot be used in our environments, it poses a bigger problem. How can we leverage container images that are managed in the public cloud?

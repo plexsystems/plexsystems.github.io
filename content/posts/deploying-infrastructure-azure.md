@@ -1,10 +1,11 @@
 ---
 title: "Deploying Atlantis for Azure DevOps onto Kubernetes"
 date: "2020-04-05"
-author: "John Reese"
-github: jpreese
+authors:
+- github: jpreese
+  name: "John Reese"
 categories: ["azure", "infrastructure", "kubernetes", "terraform"]
-featuredImage: "/images/atlantis.jpg"
+featuredImage: "/images/deploying-infrastructure-azure/featured.jpg"
 ---
 
 At Plex, our initial adoption of [Terraform](https://www.terraform.io/) was relatively painless. There weren't many teams writing infrastructure as code, and most of the changes that were being deployed through Terraform were new pieces of infrastructure that didn't have any dependencies.
@@ -89,7 +90,7 @@ To get the plan, Atlantis will:
 
 This results in the following workflow:
 
-{{< figure src="/images/atlantis_workflow.png" >}}
+{{< figure src="/images/deploying-infrastructure-azure/atlantis_workflow.png" >}}
 
 With this approach, engineers no longer need to have access to the managed infrastructure. All plan and apply operations are handled within the pull request.
 

@@ -1,10 +1,11 @@
 ---
 title: "Accelerated Feedback Loops when Developing for Kubernetes with Conftest"
 date: "2020-05-23"
-author: "John Reese"
-github: jpreese
+authors:
+- github: jpreese
+  name: "John Reese"
 categories: ["kubernetes", "policy", "security", "code reviews"]
-featuredImage: "/images/loop.jpg"
+featuredImage: "/images/kubernetes-policy-conftest/featured.jpg"
 ---
 
 The feedback loop when deploying to Kubernetes can be quite slow. Not only does the YAML need to be syntactically correct, but we need to ask ourselves:

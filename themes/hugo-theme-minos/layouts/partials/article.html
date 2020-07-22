@@ -6,12 +6,14 @@
         </header>
         {{ end }}
         <div class="article-meta">
-            <img alt="{{ .Params.Author }}" class="article-author-img"
-                src="https://avatars2.githubusercontent.com/{{ .Params.Github }}?v=3&s=40" />
+            {{ range .Params.authors }}
+            <img alt="{{ .name }}" class="article-author-img"
+                src="https://avatars2.githubusercontent.com/{{ .github }}?v=3&s=40" />
 
             <span class="article-author">
-                <a href="//github.com/{{ .Params.Github }}">{{ .Params.Author }}</a>
+                <a href="//github.com/{{ .github }}">{{ .name }}</a>
             </span>
+            {{ end }}
 
             <img class="calendar-img" src="/images/calendar.png" alt="calendar" />
 
