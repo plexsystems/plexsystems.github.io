@@ -4,7 +4,7 @@ date: "2020-06-08"
 author: "John Reese"
 github: jpreese
 categories: ["containers", "testing"]
-featuredImage: "/images/containers.jpg"
+featuredImage: "/images/container-structure-test/featured.jpg"
 ---
 
 It is no secret that when we are writing software, tests are a critical component to ensure the code _actually_ does what we say it does. It is so critical that most languages come with testing frameworks. JavaScript has testing frameworks such as [mocha](https://mochajs.org/) and [jasmine](https://jasmine.github.io/). Go ships with its own testing capabilities provided by the [testing package](https://golang.org/pkg/testing/). And while writing tests in these languages is an accepted standard practice, all too often we forget that there is more to getting an application onto production than the app itself.

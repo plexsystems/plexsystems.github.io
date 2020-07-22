@@ -4,7 +4,7 @@ date: "2020-05-23"
 author: "John Reese"
 github: jpreese
 categories: ["kubernetes", "policy", "security", "code reviews"]
-featuredImage: "/images/loop.jpg"
+featuredImage: "/images/kubernetes-policy-conftest/featured.jpg"
 ---
 
 The feedback loop when deploying to Kubernetes can be quite slow. Not only does the YAML need to be syntactically correct, but we need to ask ourselves:
