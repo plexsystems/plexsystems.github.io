@@ -1,8 +1,9 @@
 ---
 title: "Developing versionless APIs with GraphQL"
 date: "2020-07-22"
-author: "Bing Xiao"
-github: xo426017
+authors: 
+- github: xo426017
+  name: "Bing Xiao"
 categories: ["graphql", "API"]
 featuredImage: "/images/developing-versionless-graphql-apis/featured.png"
 ---
