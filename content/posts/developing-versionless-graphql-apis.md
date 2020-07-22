@@ -1,5 +1,5 @@
 ---
-title: "Developing versionless APIs with GraphQL"
+title: "Developing Versionless APIs with GraphQL"
 date: "2020-07-22"
 authors: 
 - github: xo426017
