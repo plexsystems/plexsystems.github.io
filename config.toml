@@ -1,9 +1,8 @@
 baseURL = "https://plexsystems.github.io"
-languageCode = "en-us"
-title = "Plex Engineering"
-theme = "hugo-theme-minos"
-disqusShortname= "plexengineering"
 googleAnalytics = "UA-170945889-1"
+languageCode = "en-us"
+theme = "hugo-theme-minos"
+title = "Plex Engineering"
 
 [params]
-  customCss = ["css/custom.css"]
+customCss = ["css/custom.css"]
