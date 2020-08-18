@@ -14,7 +14,7 @@ With REST APIs, every resource needs an API endpoint. When we need to add a new 
 
 ## GraphQL as an alternative
 
-GraphQL has recently made a huge splash in the API world by addressing some of the pain points with REST APIs, and can help with both maintenance and performance.
+GraphQL has made a huge splash in the API world by addressing some of the pain points with REST APIs, and can help with both maintenance and performance.
 
 While REST API resources require an API endpoint, GraphQL operates from a single `/graphql` endpoint. The new resource can be added via new types, or fields, in the GraphQL schema without creating a new endpoint.
 
