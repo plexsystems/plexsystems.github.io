@@ -8,23 +8,29 @@ categories: ["graphql", "API"]
 featuredImage: "/images/developing-versionless-graphql-apis/featured.png" 
 ---
 
-GraphQL has recently made a huge splash in the API world by addressing some of the pain points with REST APIs.
+Many of the services that we write at Plex rely on REST (or REST-like) APIs. While REST APIs make sense for many of these services, it does not make sense for all of them. For some domains, such as EDI, that require many endpoints, performance, and maintenance concerns start to become a problem. Every API call is a round-trip from the client to the server, impacting the overall performance of the initial request.
 
-With REST APIs, every resource needs an API endpoint. When we need to add a new resource, the endpoint often must be versioned, and/or a brand-new endpoint must be created. This leads to many maintainability and usability issues.
+With REST APIs, every resource needs an API endpoint. When we need to add a new resource, the endpoint often must be versioned, and a brand-new endpoint must be created. Creating endpoints for each new resource leads to many maintainability and usability issues.
 
-However, GraphQL operates from a single `/graphql` endpoint. The new resource can be added via new types, or fields, in the GraphQL schema without creating a new endpoint.
+## GraphQL as an alternative
+
+GraphQL has recently made a huge splash in the API world by addressing some of the pain points with REST APIs, and can help with both maintenance and performance.
+
+While REST API resources require an API endpoint, GraphQL operates from a single `/graphql` endpoint. The new resource can be added via new types, or fields, in the GraphQL schema without creating a new endpoint.
 
 The GraphQL schema also provides interactive documentation. API consumers can use [GraphiQL](https://www.electronjs.org/apps/graphiql) or the [GraphQL Playground](https://github.com/prisma-labs/graphql-playground) to view the documentation for the query that they are building.
 
-That said, designing an extensible schema is the most important part of building versionless APIs in GraphQL.  
+That said, designing an extensible schema is the most important part of building versionless APIs in GraphQL.
 
 ## Schema design
 
 There are a few things that can help when designing a schema.
 
-First and foremost, grasp the domain knowledge, and try to understand the business domain as best you can. Then, follow a few schema design principles for GraphQL. For instance, it is preferable to use more complex structures like an object type than simple structures, like an array. This ensures that new data fields can be added easily, and more complex business objects can be composed without much effort.
+First and foremost, grasp the domain knowledge and try to understand the business domain. Unlike writing queries against a relational database where the fields and tables are known ahead of time, GraphQL enables writing queries that make sense for the domain. Queries written for GraphQL will focus more on the domain and the events in that domain.
 
-Additionally, an Enum should be preferred to represent a field instead of a string. Using an Enum is especially helpful for API consumers who can easily be aware of the possible values for that Enum in the build-in online documentation.
+Second, follow a few schema design principles for GraphQL. For instance, it is preferable to use more complex structures like an object type than simple structures, like an array. This ensures that new data fields can be added easily, and more complex business objects can be composed without much effort.
+
+Finally, an Enum should be preferred to represent a field instead of a string. Using an Enum is especially helpful for API consumers who can easily be aware of the possible values for that Enum in the build-in online documentation.
 
 ## Using the GraphQL API
 
@@ -102,6 +108,6 @@ GraphQL provides a complete and understandable description of the data in your A
 
 It is worth mentioning that quite a few high profile companies, such as GitHub, airbnb, intuit, and PayPal have switched to GraphQL for their APIs. GraphQL has powered Facebook's mobile apps since 2012!
 
-Writing your own GraphQL API is a bit harder than writing a REST API, but in a lot of cases, it is well worth it.
+Writing your own GraphQL API is a bit harder than writing a REST API, but in a lot of cases, it is well worth it. We've already seen the benefits of using Graph-based APIs in some of the services we have written at Plex.
 
 Thanks to [Josh Searles](https://github.com/jrsearles) for helping with this post.
