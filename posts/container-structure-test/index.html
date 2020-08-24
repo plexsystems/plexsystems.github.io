@@ -1,0 +1,153 @@
+<!doctype html><html><head><title>Testing Containers with Container Structure Test // Plex Engineering</title><meta charset=utf-8><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta property="og:title" content="Testing Containers with Container Structure Test"><meta property="og:description" content="Blog posts written by engineers at Plex Systems"><meta property="og:type" content="website"><meta property="og:locale" content="en"><meta property="og:url" content="https://plexsystems.github.io/posts/container-structure-test/"><meta property="og:image" content="https://engineering.plex.com/images/plexsocial.png"><link rel="shortcut icon" href=/favicon.ico?><link href=https://plexsystems.github.io/webfonts/ptserif/main.css rel=stylesheet type=text/css><link href=https://plexsystems.github.io/webfonts/source-code-pro/main.css rel=stylesheet type=text/css><link href=https://plexsystems.github.io/webfonts/helvetica/main.css rel=stylesheet type=text/css><link rel=stylesheet href=https://plexsystems.github.io/css/style.css><link rel=stylesheet href=https://plexsystems.github.io/css/custom.css><meta name=generator content="Hugo 0.71.1"></head><body><div id=container><header id=header><div id=header-outer class=outer><div id=header-inner class=inner><div class=logo-display><a class=logo href=https://plexsystems.github.io/></a><a class=logo-text href=https://plexsystems.github.io/>Engineering</a></div><div class=icons-display><a href=//github.com/plexsystems><img class=github-img src=/images/github.png alt=github></a></div></div></header><section id=main class=outer><article class="article article-type-post" itemscope itemprop=blogPost><div class=article-inner><header class=article-header><h1 class=article-title itemprop=name>Testing Containers with Container Structure Test</h1></header><div class=article-meta><img alt="John Reese" class=article-author-img src="https://avatars2.githubusercontent.com/jpreese?v=3&s=40">
+<span class=article-author><a href=//github.com/jpreese>John Reese</a></span>
+<img class=calendar-img src=/images/calendar.png alt=calendar>
+<span class=article-date><time datetime=06-20-2020 itemprop=datePublished>June 8, 2020</time></span>
+//
+<span class=article-categories><a class=article-category-link href=https://plexsystems.github.io/categories/containers>containers</a>
+<a class=article-category-link href=https://plexsystems.github.io/categories/testing>testing</a></span></div><div class=article-entry itemprop=articleBody><p><img src=/images/container-structure-test/featured.jpg><br><p>It is no secret that when we are writing software, tests are a critical component to ensure the code <em>actually</em> does what we say it does. It is so critical that most languages come with testing frameworks. JavaScript has testing frameworks such as <a href=https://mochajs.org/>mocha</a> and <a href=https://jasmine.github.io/>jasmine</a>. Go ships with its own testing capabilities provided by the <a href=https://golang.org/pkg/testing/>testing package</a>. And while writing tests in these languages is an accepted standard practice, all too often we forget that there is more to getting an application onto production than the app itself.</p><p><a href=https://docs.docker.com/engine/reference/builder/>Dockerfiles</a> play a big part in how we ship software at Plex. We use them heavily in our build pipelines to run <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops">containerized jobs</a> as well as the distribution mechanism to get the software onto our Kubernetes clusters. We like to say, &ldquo;If it&rsquo;s code, we can test it,&rdquo; and that is no exception when it comes to writing <code>Dockerfiles</code>.</p><h2 id=a-traditional-approach-to-writing-dockerfiles>A traditional approach to writing Dockerfiles</h2><p>When tasked with writing a <code>Dockerfile</code>, there are defined requirements that the <code>Dockerfile</code> needs to satisfy. Binaries may be required to run linting tools, environment variables need to be set, and files have to exist at specific paths. Consider the <code>Dockerfile</code> that was shown in an earlier blog post, <a href=../deploying-infrastructure-azure/>Deploying Atlantis for Azure DevOps onto Kubernetes</a>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Dockerfile data-lang=Dockerfile><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> golang:1.13 as builder</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> apt-get update <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  <span style=color:#f92672>&amp;&amp;</span> apt-get install unzip<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Install terraform-bundle</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> git clone <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  --depth <span style=color:#ae81ff>1</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  --single-branch <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  --branch <span style=color:#e6db74>&#34;v0.12.0&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  https://github.com/hashicorp/terraform.git <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  $GOPATH/src/github.com/hashicorp/terraform<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> cd $GOPATH/src/github.com/hashicorp/terraform <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  <span style=color:#f92672>&amp;&amp;</span> go install ./tools/terraform-bundle<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Download plugins</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> terraform-bundle.hcl .<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> terraform-bundle package -os<span style=color:#f92672>=</span>linux -arch<span style=color:#f92672>=</span>amd64 terraform-bundle.hcl<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> mkdir /go/tmp <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  <span style=color:#f92672>&amp;&amp;</span> unzip /go/terraform_*-bundle*_linux_amd64.zip -d /go/tmp<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> runatlantis/atlantis:v0.11.1</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>ENV</span> TF_IN_AUTOMATION<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;true&#34;</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>ENV</span> TF_CLI_ARGS_init<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;-plugin-dir=/home/atlantis/.atlantis/plugin-cache&#34;</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Install Azure CLI</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>ARG</span> AZURE_CLI_VERSION<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;2.0.74&#34;</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> apk add py-pip <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  <span style=color:#f92672>&amp;&amp;</span> apk add --virtual<span style=color:#f92672>=</span>build gcc libffi-dev musl-dev openssl-dev python-dev make<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> pip --no-cache-dir install azure-cli<span style=color:#f92672>==</span><span style=color:#e6db74>${</span>AZURE_CLI_VERSION<span style=color:#e6db74>}</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Install Terragrunt</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>ARG</span> TERRAGRUNT_VERSION<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;v0.23.2&#34;</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> curl -L https://github.com/gruntwork-io/terragrunt/releases/download/<span style=color:#e6db74>${</span>TERRAGRUNT_VERSION<span style=color:#e6db74>}</span>/terragrunt_linux_amd64 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  <span style=color:#f92672>&amp;&amp;</span> -o /usr/local/bin/terragrunt <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  <span style=color:#f92672>&amp;&amp;</span> chmod +x /usr/local/bin/terragrunt<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span>  <span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Copy plugins</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> .terraformrc /root/.terraformrc<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> --chown<span style=color:#f92672>=</span>atlantis:atlantis --from<span style=color:#f92672>=</span>builder /go/tmp /home/atlantis/.atlantis/plugin-cache<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> mv /home/atlantis/.atlantis/plugin-cache/terraform /usr/local/bin/terraform<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Configure git</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> .gitconfig /home/atlantis/.gitconfig<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> azure-devops-helper.sh /home/atlantis/azure-devops-helper.sh<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Copy server-side repository config</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> repository-config.yaml /home/atlantis/repository-config.yaml<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>CMD</span> [<span style=color:#e6db74>&#34;server&#34;</span>, <span style=color:#e6db74>&#34;--repo-config=/home/atlantis/repository-config.yaml&#34;</span>]<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>LABEL</span> org.opencontainers.image.title<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;Atlantis Environment&#34;</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>LABEL</span> org.opencontainers.image.description<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;An environment to support executing Terragrunt operations with Atlantis&#34;</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>LABEL</span> binary.atlantis.version<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;v0.11.1&#34;</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>LABEL</span> binary.terragrunt.version<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>TERRAGRUNT_VERSION<span style=color:#e6db74>}</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>LABEL</span> binary.azure-cli.version<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>AZURE_CLI_VERSION<span style=color:#e6db74>}</span><span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><pre><code class=language-subtext data-lang=subtext>dockerfile
+</code></pre><p>This <code>Dockerfile</code> requires:</p><ul><li>Terraform plugins to support different types of infrastructure.</li><li>The Terragrunt CLI.</li><li>Two environment variables, <code>TF_IN_AUTOMATION</code> and <code>TF_CLI_ARGS_init</code>.</li><li>Git configuration that points to an Azure DevOps helper script (and the script itself).</li><li>A global configuration for repositories that use Atlantis.</li></ul><p>To begin writing this <code>Dockerfile</code>, knowing that we&rsquo;ll need to install <a href=https://github.com/hashicorp/terraform/tree/master/tools/terraform-bundle>terraform-bundle</a> (using Go), as well as install the <code>unzip</code> package to unzip the generated bundle, we could jump right into it and create a <code>Dockerfile</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Dockerfile data-lang=Dockerfile><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> golang:1.13 as builder</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> apt-get update <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  <span style=color:#f92672>&amp;&amp;</span> apt-get install unzip<span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><pre><code class=language-subtext data-lang=subtext>dockerfile
+</code></pre><p>To verify that the base image exists and that the unzip package was successfully installed, we execute the <code>docker run</code> command with an interactive terminal to explore the contents of the produced container.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ docker build . -t testing:latest
+$ docker run -it testing:latest
+root@fb06cc45835c:/go# unzip
+UnZip 6.00 of <span style=color:#ae81ff>20</span> April 2009, by Debian. Original by Info-ZIP.
+</code></pre></div><pre><code class=language-subtext data-lang=subtext>terminal
+</code></pre><p>We know the <code>unzip</code> package successfully installed because after executing the binary, we get a response back that includes the version of the binary and the date it was built.</p><p>If the <code>unzip</code> package did not install successfully, the container would throw an error stating that <code>unzip</code> is an unknown command.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ docker run -it testing:latest
+root@fb06cc45835c:/go# unzip
+bash: unzip: command not found
+</code></pre></div><pre><code class=language-subtext data-lang=subtext>terminal
+</code></pre><p>This cycle of adding commands into the <code>Dockerfile</code>, building the image, running the container, and exploring the structure of the container would need to continue until we met all of the requirements. While this process will allow us to satisfy all of the requirements, much of the verification is manual. Besides, when the requirements change, as they tend to do, it can be incredibly challenging to have confidence that we didn&rsquo;t inadvertently break anything else by introducing a change.</p><h2 id=a-better-way-forward-with-container-structure-test>A better way forward with Container Structure Test</h2><p><a href=https://github.com/GoogleContainerTools/container-structure-test>Container Structure Test</a> is a tool developed by Google that enables us to test the structure of a container. I&rsquo;m not sure how they came up with the name, but what&rsquo;s important is that it removes the need to test <code>Dockerfiles</code> manually!</p><p>Container Structure Test supports four different types of tests: <code>command</code>, <code>file existence</code>, <code>file content</code>, and <code>metadata</code>. Each type of test can validate a different aspect of a container. It does this by running the container for you, automatically, and testing whether or not the structure of the container meets the defined requirements in the test file.</p><p><em>NOTE: If you would like a deeper dive into the internals of Container Structure Test, the folks over at Google put together a <a href=https://opensource.googleblog.com/2018/01/container-structure-tests-unit-tests.html>blog post</a> that explains the different types of tests in greater detail, as well as how to get the most out of the tool.</em></p><h2 id=writing-a-dockerfile>Writing a Dockerfile</h2><p>When equipped with Container Structure Test, rather than creating a new <code>Dockerfile</code>, adding commands, building the container, running the container, and manually exploring the container—we define the requirements upfront.</p><p>In the previous example, the first known requirement was that the <code>unzip</code> package had to be present inside of the container. To define this requirement as a test case within Container Structure Test, we use a<code>command</code> test:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>schemaVersion</span>: <span style=color:#ae81ff>2.0.0</span>
+
+<span style=color:#66d9ef>commandTests</span>:
+- <span style=color:#66d9ef>name</span>: unzip
+  <span style=color:#66d9ef>command</span>: unzip
+  <span style=color:#66d9ef>args</span>: [<span style=color:#e6db74>&#34;-v&#34;</span>]
+</code></pre></div><pre><code class=language-subtext data-lang=subtext>unzip-test.yaml
+</code></pre><p>To test the <code>Dockerfile</code>, pass the name of the built image along with the location of the test file to the <code>container-structure-test</code> CLI.</p><p><em>NOTE: It&rsquo;s possible to save some keystrokes, as well as time, by combining the <code>docker build</code> and <code>container-structure-test test</code> commands so that every time the <code>Dockerfile</code> changes, a new image is built and the test suite is run against the most recently built image.</em></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ docker build . -t testing:latest <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  <span style=color:#f92672>&amp;&amp;</span> container-structure-test test --image testing:latest --config unzip-test.yaml
+
+<span style=color:#f92672>===================================</span>
+<span style=color:#f92672>=============</span> RESULTS <span style=color:#f92672>=============</span>
+<span style=color:#f92672>===================================</span>
+Passes:      <span style=color:#ae81ff>1</span>
+Failures:    <span style=color:#ae81ff>0</span>
+Duration:    443.548204ms
+Total tests: <span style=color:#ae81ff>1</span>
+</code></pre></div><pre><code class=language-subtext data-lang=subtext>terminal
+</code></pre><p>While it&rsquo;s possible to create a single test and then pass the test inside of your <code>Dockerfile</code> (which is reminiscent of Test-Driven Development), another valid approach is to define <em>all</em> your requirements first and build the <code>Dockerfile</code> from the test suite. As either is acceptable, whichever method makes the most sense for your style is the one you should use!</p><p>To complete our example of writing a test suite for the Atlantis container image, this is the completed test suite.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>schemaVersion</span>: <span style=color:#ae81ff>2.0.0</span>
+
+<span style=color:#75715e># Validate the environment contains the required tooling</span>
+<span style=color:#66d9ef>commandTests</span>:
+- <span style=color:#66d9ef>name</span>: Atlantis
+  <span style=color:#66d9ef>command</span>: atlantis
+  <span style=color:#66d9ef>args</span>: [<span style=color:#e6db74>&#34;version&#34;</span>]
+
+- <span style=color:#66d9ef>name</span>: Terraform
+  <span style=color:#66d9ef>command</span>: terraform
+  <span style=color:#66d9ef>args</span>: [<span style=color:#e6db74>&#34;version&#34;</span>]
+  <span style=color:#66d9ef>expectedOutput</span>: [<span style=color:#e6db74>&#34;Terraform v0.12.24&#34;</span>]
+
+- <span style=color:#66d9ef>name</span>: Terragrunt
+  <span style=color:#66d9ef>command</span>: terragrunt
+  <span style=color:#66d9ef>args</span>: [<span style=color:#e6db74>&#34;--version&#34;</span>]
+
+- <span style=color:#66d9ef>name</span>: Azure CLI
+  <span style=color:#66d9ef>command</span>: az
+  <span style=color:#66d9ef>args</span>: [<span style=color:#e6db74>&#34;--version&#34;</span>]
+
+<span style=color:#75715e># Validate the required configuration files exist</span>
+<span style=color:#66d9ef>fileExistenceTests</span>:
+- <span style=color:#66d9ef>name</span>: Server Configuration
+  <span style=color:#66d9ef>path</span>: /home/atlantis/repository-config.yaml
+  <span style=color:#66d9ef>shouldExist</span>: <span style=color:#66d9ef>true</span>
+
+- <span style=color:#66d9ef>name</span>: Azure DevOps Helper
+  <span style=color:#66d9ef>path</span>: /home/atlantis/azure-devops-helper.sh
+  <span style=color:#66d9ef>shouldExist</span>: <span style=color:#66d9ef>true</span>
+
+- <span style=color:#66d9ef>name</span>: Terraform Plugin Cache
+  <span style=color:#66d9ef>path</span>: /home/atlantis/.atlantis/plugin-cache
+  <span style=color:#66d9ef>shouldExist</span>: <span style=color:#66d9ef>true</span>
+
+<span style=color:#75715e># Validate checkpoint functionality is off</span>
+<span style=color:#66d9ef>fileContentTests</span>:
+- <span style=color:#66d9ef>name</span>: Terraform Checkpoint Disabled 
+  <span style=color:#66d9ef>path</span>: /home/atlantis/.terraformrc
+  <span style=color:#66d9ef>expectedContents</span>: [<span style=color:#e6db74>&#39;disable_checkpoint = true&#39;</span>]
+
+<span style=color:#75715e># Validate container environment is configured as expected</span>
+<span style=color:#66d9ef>metadataTest</span>:
+  <span style=color:#66d9ef>env</span>:
+    - <span style=color:#66d9ef>key</span>: TF_IN_AUTOMATION
+      <span style=color:#66d9ef>value</span>: <span style=color:#66d9ef>true</span>
+    - <span style=color:#66d9ef>key</span>: TF_CLI_ARGS_init
+      <span style=color:#66d9ef>value</span>: -plugin-dir=/home/atlantis/.atlantis/plugin-cache
+</code></pre></div><pre><code class=language-subtext data-lang=subtext>atlantis-tests.yaml
+</code></pre><h2 id=integrating-container-structure-test-into-your-workflow>Integrating Container Structure Test into your workflow</h2><p>While using Container Structure Test for local development can save a lot of time when first writing the <code>Dockerfile</code>, the benefits don&rsquo;t stop there!</p><p>After creating the <code>Dockerfile</code>, we now have defined a set of requirements that the <code>Dockerfile</code> must adhere to. Having this set of requirements enables us to be able to run Container Structure Test at any point in the future and verify, automatically, that no regressions or unexpected changes occurred inside of the container. A software component that exists inside of a container image could change its version at any time, or even worse, be removed altogether. If you depend on specific components, and particular versions, add tests for them!</p><p>In the case of Atlantis, the maintainers are free to <a href=https://github.com/runatlantis/atlantis/commit/a9873aeb585c9e03e89c188feb9dd0e7086ebdf3>change the version of Terraform</a> inside of the container at any time during their release cycle. Updating from Atlantis <code>0.12</code> to <code>0.13</code> should be trivial, but because the version of Terraform used to deploy infrastructure <a href=https://github.com/hashicorp/terraform/issues/19290#issuecomment-436012086>needs to be taken into consideration</a>—we need to be made aware when the version changes.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#66d9ef>schemaVersion</span>: <span style=color:#ae81ff>2.0.0</span>
+
+- <span style=color:#66d9ef>name</span>: Terraform
+  <span style=color:#66d9ef>command</span>: terraform
+  <span style=color:#66d9ef>args</span>: [<span style=color:#e6db74>&#34;version&#34;</span>]
+  <span style=color:#66d9ef>expectedOutput</span>: [<span style=color:#e6db74>&#34;Terraform v0.12.21&#34;</span>]
+</code></pre></div><pre><code class=language-subtext data-lang=subtext>terraform-version-test.yaml
+</code></pre><p>This <code>command test</code> will fail the test suite when the version of Terraform inside of the container changes from <code>v0.12.21</code>. Now, upgrading Atlantis is as simple as bumping the version and re-running the test suite.</p><p>Integrating Container Structure Test into your workflow for developing <code>Dockerfiles</code> automates much of the manual exploration that was previously required to verify the structure of the container. As a bonus, after the <code>Dockerfile</code> is first built, we have a test suite that we can run every time we need to make a change to the <code>Dockerfile</code> inside of our pipelines.</p></p></div></div><nav id=article-nav><a href=/posts/introducing-sinker/ id=article-nav-newer class=article-nav-link-wrap><div class=article-nav-title><span>&lt;</span>&nbsp;
+Introducing Sinker: A tool to sync container images from one registry to another</div></a><a href=/posts/kubernetes-policy-conftest/ id=article-nav-older class=article-nav-link-wrap><div class=article-nav-title>Accelerated Feedback Loops when Developing for Kubernetes with Conftest&nbsp;<span>></span></div></a></nav></article></section></div><br><footer><div class=outer><div id=footer-note>All blog posts are written by engineers at Plex Systems. Our goal is to share our experiences in order to
+promote openness and collaboration within the technical community.</div><div id=copyright>&copy; 2020 Plex Systems</div></div><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-170945889-1','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/tomorrow-night.min.css integrity="sha256-2wL88NKUqvJi/ExflDzkzUumjUM73mcK2gBvBBeLvTk=" crossorigin=anonymous><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js integrity="sha256-KbfTjB0WZ8vvXngdpJGY3Yp3xKk+tttbqClO11anCIU=" crossorigin=anonymous></script><script>hljs.initHighlightingOnLoad();</script><script></script></footer></body></html>

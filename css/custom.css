@@ -1,0 +1,177 @@
+html {
+    height: 100%
+}
+
+body {
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'asans-serif';
+    color: #000;
+    height: 100%;
+    font-weight: 200;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: .025rem;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    background-color: #000;
+    color: #FFF;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+[data-lang~="subtext"] {
+    color: #000;
+    font-variant: small-caps;
+}
+
+code {
+    white-space: pre-wrap;
+}
+
+#copyright {
+    text-align: left;
+    font-size: 14px;
+    color: #3beedd;
+}
+
+#footer-note {
+    padding-bottom: 30px;
+    font-size: 14px;
+}
+
+#header {
+    background-color: #000;
+}
+
+#header-inner {
+    display: flex;
+}
+
+#container {
+    flex: 1 0 auto;
+}
+
+.article-entry pre, .article-entry .highlight {
+    background-color: #FFF
+}
+
+.article-entry {
+    font-size: 16px;
+}
+
+.article-entry a {
+    color: #00c5cd;
+}
+
+.article-entry a:hover {
+    color: #fa342b;
+}
+
+.article-entry code {
+    font-size: 14px;
+}
+
+.article-title {
+    font-weight: normal;
+}
+
+.article-meta .article-author a {
+    color: #00c5cd;
+    font-weight: 400;
+}
+
+.article-author a:hover {
+    color: #fa342b;
+}
+
+.article-author-img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    position: relative;
+    top: -3px;
+}
+
+.article-date {
+    float: none;
+    color: #999;
+    font-weight: 400;
+}
+
+.article-categories .article-category-link {
+    border-radius: 5px;
+    padding: 1px 4px 1px;
+    border: 1px solid #00c5cd;
+    font-size: 12px;
+    color: #00c5cd;
+    text-transform: lowercase;
+    margin-left: 2px;
+    border-bottom: 1px solid #00c5cd;
+    white-space: nowrap;
+    font-weight: 400;
+}
+
+.article-meta .article-categories a:hover {
+    border: 1px solid #fa342b;
+    color: #fa342b;
+}
+
+.article-more-link a {
+    color: #00c5cd;
+}
+
+.article-more-link a:hover {
+    color: #fa342b;
+}
+
+.article-entry pre,
+.article-entry .highlight {
+    padding: 0px;
+}
+
+.article-entry .highlight pre {
+    padding: 10px;
+}
+
+.blob-code .blob-code-inner {
+    white-space: normal;
+}
+
+.logo {
+    background-image: url('/images/plex-logo.png');
+    width: 120px;
+    background-size: 110px 21px;
+}
+
+.logo-text {
+    color: #FFFFFF;
+    font-weight: lighter;
+    font-size: 27px;
+    white-space: nowrap;
+}
+
+.logo-display {
+    display: flex;
+    flex-grow: 1;
+}
+
+.icons-display {
+    align-self: center;
+}
+
+.calendar-img {
+    width: 15px;
+    height: 15px;
+    padding-left: 10px;
+    vertical-align: middle;
+    position: relative;
+    top: -3px;
+}
+
+.github-img {
+    padding-top: 10px;
+    width: 28px;
+    height: 28px;
+}
