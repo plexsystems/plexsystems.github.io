@@ -1,6 +1,6 @@
 ---
 title: "Railway-Oriented Programming in C#"
-date: "2020-10-09"
+date: "2020-12-09"
 authors:
 - github: mgw854
   name: "Matthew White"
